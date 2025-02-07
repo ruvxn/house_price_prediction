@@ -28,8 +28,12 @@ plt.show()
  # Drop columns with correlation less than 0.1
 house_data = house_data.drop(columns=['id', 'date'])
 
-# get dummies for zipcode column to convert it to numeric values because it is a categorical column
-house_data = pd.get_dummies(house_data, columns=['zipcode'], drop_first=True)
+# Compute average price per zipcode
+zipcode_target = house_data.groupby('zipcode')['price'].mean()
+
+# Map the average price to each row
+house_data['zipcode'] = house_data['zipcode'].map(zipcode_target)
+
 
 # scale the data using StandardScaler so that all the features are on the same scale
 scaler = StandardScaler()
@@ -40,4 +44,4 @@ house_data[features] = scaler.fit_transform(house_data[features])
 print(house_data.head())
 
 #save the cleaned dataset
-#house_data.to_csv('dataset/cleaned_house_data.csv', index=False)
+house_data.to_csv('dataset/cleaned_house_data.csv', index=False)
