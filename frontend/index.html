@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/index.css">
+    <title>House Price Prediction</title>
+    <script>
+        async function predictPrice() {
+            const features = [
+                parseFloat(document.getElementById("sqft_living").value),
+                parseFloat(document.getElementById("grade").value),
+                parseFloat(document.getElementById("bathrooms").value),
+                parseFloat(document.getElementById("sqft_above").value),
+                parseFloat(document.getElementById("lat").value)
+            ];
+
+            const response = await fetch("http://127.0.0.1:8000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ features: features })
+            });
+
+            const data = await response.json();
+            document.getElementById("result").innerText = `Predicted Price: $${data.predicted_price.toFixed(2)}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>House Price Prediction</h1>
+    
+    <label>Sqft Living: <input type="number" id="sqft_living" value="3000"></label><br>
+    <label>Grade: <input type="number" id="grade" value="8"></label><br>
+    <label>Bathrooms: <input type="number" id="bathrooms" value="3"></label><br>
+    <label>Sqft Above: <input type="number" id="sqft_above" value="2000"></label><br>
+    <label>Latitude: <input type="number" id="lat" value="47.5"></label><br>
+    
+    <button onclick="predictPrice()">Predict</button>
+    
+    <h2 id="result">Predicted Price: </h2>
+</body>
+</html>
